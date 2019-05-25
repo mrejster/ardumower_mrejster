@@ -516,16 +516,22 @@ void Robot::readSensors(){
   if ((bumperUse) && (millis() >= nextTimeBumper)){    
     nextTimeBumper = millis() + 100;               
     tilt = (readSensor(SEN_TILT) == 0);
-        
-    if (readSensor(SEN_BUMPER_LEFT) == 0) {
+
+    //Erik Jakobsson, 2019-05-25
+    //mod to allow optical sensor
+    // if (readSensor(SEN_BUMPER_LEFT) == 0) {
+    if (!readSensor(SEN_BUMPER_LEFT) == 0) {
       bumperLeftCounter++;
-			setSensorTriggered(SEN_BUMPER_LEFT);
+      setSensorTriggered(SEN_BUMPER_LEFT);
       bumperLeft=true;
     }
 
-    if (readSensor(SEN_BUMPER_RIGHT) == 0) {
+    //Erik Jakobsson, 2019-05-25
+    //if (readSensor(SEN_BUMPER_RIGHT) == 0) {
+    //mod to allow optical sensor
+    if (!readSensor(SEN_BUMPER_RIGHT) == 0) {
       bumperRightCounter++;
-			setSensorTriggered(SEN_BUMPER_RIGHT);
+      setSensorTriggered(SEN_BUMPER_RIGHT);
       bumperRight=true;
     } 
   }
@@ -1638,11 +1644,3 @@ void Robot::loop()  {
                              
   loopsPerSecCounter++;  
 }
-
-
-
-
-
-
-
-
