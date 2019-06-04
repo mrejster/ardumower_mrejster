@@ -132,6 +132,3 @@ byte writeAT24C32(unsigned int address,byte data);
 int getDayOfWeek(int month, int day, int year, int CalendarSystem);
 
 #endif 
-
-
-

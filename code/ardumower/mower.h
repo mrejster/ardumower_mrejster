@@ -172,4 +172,3 @@ class Mower : public Robot
 extern Mower robot;
 
 #endif
-

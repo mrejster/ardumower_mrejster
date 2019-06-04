@@ -457,5 +457,3 @@ void Robot::printOdometry(){
   Console.print(",");
   Console.println(odometryY);  
 }
-
-

@@ -52,5 +52,3 @@ void Robot::checkBattery(){
 		}
 	}
 }
-
-
