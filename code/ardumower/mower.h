@@ -57,16 +57,20 @@ choose your robot type, PCB version, baud rates, pin definitions etc.
 #define pinMotorMowPWM 2           // M1_IN1 mower motor PWM pin (if using MOSFET, use this pin)
 #define pinMotorMowDir 29          // M1_IN2 mower motor Dir pin (if using MOSFET, keep unconnected)
 #define pinMotorMowSense A3        // M1_FB  mower motor current sense  
+#define pinMotorMowSense2 A6       // M1_FB  mower motor current sense  
+#define pinMotorMowSense3 A7       // M1_FB  mower motor current sense  
 #define pinMotorMowFault 26        // M1_SF  mower motor fault   (if using MOSFET/L298N, keep unconnected)
+#define pinMotorMowFault2 46       // M1_SF  mower motor 2 fault   (if using MOSFET/L298N, keep unconnected)
+#define pinMotorMowFault3 47       // M1_SF  mower motor 3 fault   (if using MOSFET/L298N, keep unconnected)
 #define pinMotorMowEnable 28       // EN mower motor enable      (if using MOSFET/L298N, keep unconnected)
 #define pinMotorMowRpm A11
     
 #define pinBumperLeft 39           // bumper pins
 #define pinBumperRight 38
 
-#define pinDropLeft 45           // drop pins                                                                                          Dropsensor - Absturzsensor
+//#define pinDropLeft 45           // drop pins
+#define pinDropLeft 35   //Erik 2019-07-02           // drop pins
 #define pinDropRight 23          // drop pins                                                                                          Dropsensor - Absturzsensor
-
 #define pinSonarCenterTrigger 24   // ultrasonic sensor pins
 #define pinSonarCenterEcho 22
 #define pinSonarRightTrigger 30    
@@ -81,7 +85,8 @@ choose your robot type, PCB version, baud rates, pin definitions etc.
 #define pinRedLED 7                // DuoLED red
 #define pinLED 13                  // LED
 #define pinBuzzer 53               // Buzzer
-#define pinTilt 35                 // Tilt sensor (BumperDuino)
+//#define pinTilt 35                 // Tilt sensor (BumperDuino)
+#define pinTilt 45                 // Tilt sensor (BumperDuino) //Erik 2019-07-02
 #define pinButton 51               // digital ON/OFF button
 #define pinBatteryVoltage A2       // battery voltage sensor
 #define pinBatterySwitch 4         // battery-OFF switch   
@@ -108,8 +113,8 @@ choose your robot type, PCB version, baud rates, pin definitions etc.
 #define pinLawnFrontSend 41        // lawn sensor front sender 
 #define pinLawnBackRecv 42         // lawn sensor back receive
 #define pinLawnBackSend 43         // lawn sensor back sender 
-#define pinUserSwitch1 46          // user-defined switch 1
-#define pinUserSwitch2 47          // user-defined switch 2
+#define pinUserSwitch1 8          // user-defined switch 1
+#define pinUserSwitch2 9          // user-defined switch 2
 #define pinUserSwitch3 48          // user-defined switch 3
 #define pinRain 44                 // rain sensor
 // IMU (compass/gyro/accel): I2C  (SCL, SDA) 

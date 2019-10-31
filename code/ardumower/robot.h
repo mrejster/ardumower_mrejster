@@ -73,6 +73,8 @@ enum {
   SEN_MOTOR_LEFT,        // 0..MAX_MOTOR_CURRENT
   SEN_MOTOR_RIGHT,       // 0..MAX_MOTOR_CURRENT
   SEN_MOTOR_MOW,         // 0..MAX_MOW_CURRENT
+  SEN_MOTOR_MOW2,         // 0..MAX_MOW_CURRENT
+  SEN_MOTOR_MOW3,         // 0..MAX_MOW_CURRENT
   SEN_BUMPER_LEFT,       // LOW = pressed
   SEN_BUMPER_RIGHT,      // LOW = pressed
   SEN_DROP_LEFT,       // LOW = pressed                                                                                                  // Dropsensor - Absturzsensor

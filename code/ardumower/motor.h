@@ -150,7 +150,7 @@ void Robot::motorControlPerimeter() {
 
   //Control the perimeter motor only each 30ms
   if (millis() < nextTimeMotorPerimeterControl) return;
-  nextTimeMotorPerimeterControl = millis() + 30; //possible 15ms with the DUE
+  nextTimeMotorPerimeterControl = millis() + 20; //possible 15ms with the DUE
   //PerimeterMagMaxValue=2000;  //need to change in the future 	
   //tell to the pid where is the mower   (Pid.x)
   perimeterPID.x = 5 * (double(perimeterMag) / perimeterMagMaxValue);

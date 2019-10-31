@@ -722,7 +722,7 @@ void RemoteControl::sendBatteryMenu(boolean update){
   serialPort->print("V ");
   serialPort->print(robot->chgCurrent);
   serialPort->print("A");
-  sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.06);       
+  sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.1);       
   sendSlider("j10", F("charging starts if Voltage is below"), robot->startChargingIfBelow, "", 0.1, robot->batFull);       
   sendSlider("j11", F("Battery is fully charged if current is below"), robot->batFullCurrent, "", 0.1, robot->batChargingCurrentMax);       
   serialPort->println("}");
@@ -782,7 +782,7 @@ void RemoteControl::sendOdometryMenu(boolean update){
   sendPIDSlider("l07", "RPM", robot->motorLeftPID, 0.01, 3.0);        
   sendSlider("l04", F("Ticks per one full revolution"), robot->odometryTicksPerRevolution, "", 1, 2120);       
   sendSlider("l01", F("Ticks per cm"), robot->odometryTicksPerCm, "", 0.1, 35);       
-  sendSlider("l02", F("Wheel base cm"), robot->odometryWheelBaseCm, "", 0.1, 50);    
+  sendSlider("l02", F("Wheel base cm"), robot->odometryWheelBaseCm, "", 0.1, 80);    
 	serialPort->println(F("|l05~Testing is"));
   switch (testmode){
     case 0: serialPort->print(F("OFF")); break;

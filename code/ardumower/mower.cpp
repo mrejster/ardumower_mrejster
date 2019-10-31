@@ -33,9 +33,9 @@ Mower::Mower(){
   // ------- wheel motors -----------------------------
   motorAccel                 = 1000;      // motor wheel acceleration - only functional when odometry is not in use (warning: do not set too low)
   #if defined (ROBOT_ARDUMOWER)
-		motorPowerMax              = 75;        // motor wheel max power (Watt)		  
+		motorPowerMax              = 25;        // motor wheel max power (Watt)		  
 		motorSpeedMaxPwm           = 255;       // motor wheel max Pwm  (8-bit PWM=255, 10-bit PWM=1023)
-		motorSpeedMaxRpm           = 25;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
+		motorSpeedMaxRpm           = 20;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
 		motorLeftPID.Kp            = 1.5;       // motor wheel PID controller
     motorLeftPID.Ki            = 0.29;
     motorLeftPID.Kd            = 0.25;
@@ -103,13 +103,13 @@ Mower::Mower(){
   perimeterTriggerTimeout    = 0;          // perimeter trigger timeout when escaping from inside (ms)  
   perimeterOutRollTimeMax    = 2000;       // roll time max after perimeter out (ms)
   perimeterOutRollTimeMin    = 750;        // roll time min after perimeter out (ms)
-  perimeterOutRevTime        = 2200;       // reverse time after perimeter out (ms)
+  perimeterOutRevTime        = 3000;       // reverse time after perimeter out (ms)
   perimeterTrackRollTime     = 1500;       // roll time during perimeter tracking
   perimeterTrackRevTime      = 2200;       // reverse time during perimeter tracking
   #if defined (ROBOT_ARDUMOWER)
 	  perimeterPID.Kp            = 16;       // perimeter PID controller
     perimeterPID.Ki            = 8;
-    perimeterPID.Kd            = 0.8;  
+    perimeterPID.Kd            = 0;  
 	#else // ROBOT_MINI
 		perimeterPID.Kp    = 24.0;  // perimeter PID controller
     perimeterPID.Ki    = 7.0;
@@ -134,7 +134,7 @@ Mower::Mower(){
   imuRollPID.Kd              = 0;  
   
   // ------ model R/C ------------------------------------
-  remoteUse                  = 1;          // use model remote control (R/C)?
+  remoteUse                  = 0;          // use model remote control (R/C)?
   
   // ------ battery -------------------------------------
   #if defined (ROBOT_ARDUMOWER)
@@ -354,10 +354,14 @@ void Mower::setup(){
   pinMode(pinMotorMowDir, OUTPUT); 
   pinMode(pinMotorMowPWM, OUTPUT);     
   pinMode(pinMotorMowSense, INPUT);     
+  pinMode(pinMotorMowSense2, INPUT); 
+  pinMode(pinMotorMowSense3, INPUT); 
   pinMode(pinMotorMowRpm, INPUT);    
   pinMode(pinMotorMowEnable, OUTPUT);
   digitalWrite(pinMotorMowEnable, HIGH);  
   pinMode(pinMotorMowFault, INPUT);      
+  pinMode(pinMotorMowFault2, INPUT); 
+  pinMode(pinMotorMowFault3, INPUT); 
     
   // lawn sensor
   pinMode(pinLawnBackRecv, INPUT);
@@ -426,6 +430,8 @@ void Mower::setup(){
   // ADC  
   ADCMan.setCapture(pinChargeCurrent, 1, true);//Aktivierung des LaddeStrom Pins beim ADC-Managers      
   ADCMan.setCapture(pinMotorMowSense, 1, true);
+  ADCMan.setCapture(pinMotorMowSense2, 1, true);
+  ADCMan.setCapture(pinMotorMowSense3, 1, true);
   ADCMan.setCapture(pinMotorLeftSense, 1, true);
   ADCMan.setCapture(pinMotorRightSense, 1, true);
   ADCMan.setCapture(pinBatteryVoltage, 1, false);
@@ -534,7 +540,7 @@ void checkMotorFault(){
     //digitalWrite(pinMotorEnable, LOW);
     //digitalWrite(pinMotorEnable, HIGH);
   }
-  if (digitalRead(pinMotorMowFault)==LOW){  
+  if ((digitalRead(pinMotorMowFault)==LOW) || (digitalRead(pinMotorMowFault2)==LOW) || (digitalRead(pinMotorMowFault3)==LOW) ){  
     robot.addErrorCounter(ERR_MOTOR_MOW);
     //Console.println(F("Error: motor mow fault"));
     robot.setNextState(STATE_ERROR, 0);
@@ -555,7 +561,7 @@ void Mower::resetMotorFault(){
     digitalWrite(pinMotorEnable, HIGH);
     //Console.println(F("Reset motor right fault"));
 }
-  if (digitalRead(pinMotorMowFault)==LOW){  
+  if ((digitalRead(pinMotorMowFault)==LOW)||(digitalRead(pinMotorMowFault2)==LOW)||(digitalRead(pinMotorMowFault3)==LOW)){  
     digitalWrite(pinMotorMowEnable, LOW);
     digitalWrite(pinMotorMowEnable, HIGH);
     //Console.println(F("Reset motor mow fault"));
@@ -568,6 +574,8 @@ int Mower::readSensor(char type){
 // motors------------------------------------------------------------------------------------------------
 #if defined (DRIVER_MC33926)
     case SEN_MOTOR_MOW: return ADCMan.read(pinMotorMowSense); break;
+    case SEN_MOTOR_MOW2: return ADCMan.read(pinMotorMowSense2); break;
+    case SEN_MOTOR_MOW3: return ADCMan.read(pinMotorMowSense3); break;
     case SEN_MOTOR_RIGHT: checkMotorFault(); return ADCMan.read(pinMotorRightSense); break;
     case SEN_MOTOR_LEFT:  checkMotorFault(); return ADCMan.read(pinMotorLeftSense); break;
     //case SEN_MOTOR_MOW_RPM: break; // not used - rpm is upated via interrupt

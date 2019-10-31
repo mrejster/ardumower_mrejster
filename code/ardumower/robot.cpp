@@ -39,9 +39,9 @@ const char* stateNames[] ={"OFF ", "RC  ", "FORW", "ROLL", "REV ", "CIRC", "ERR 
   "STREV", "STROL", "STFOR", "MANU", "ROLW", "POUTFOR", "POUTREV", "POUTROLL", "TILT", "BUMPREV", "BUMPFORW"};
 
 const char* sensorNames[] ={"SEN_PERIM_LEFT", "SEN_PERIM_RIGHT", "SEN_PERIM_LEFT_EXTRA", "SEN_PERIM_RIGHT_EXTRA", "SEN_LAWN_FRONT", "SEN_LAWN_BACK", 
-	"SEN_BAT_VOLTAGE", "SEN_CHG_CURRENT", "SEN_CHG_VOLTAGE", "SEN_MOTOR_LEFT", "SEN_MOTOR_RIGHT", "SEN_MOTOR_MOW", "SEN_BUMPER_LEFT", "SEN_BUMPER_RIGHT", 
-	"SEN_DROP_LEFT", "SEN_DROP_RIGHT", "SEN_SONAR_CENTER", "SEN_SONAR_LEFT", "SEN_SONAR_RIGHT", "SEN_BUTTON", "SEN_IMU", "SEN_MOTOR_MOW_RPM", "SEN_RTC",
-  "SEN_RAIN", "SEN_TILT"};
+	"SEN_BAT_VOLTAGE", "SEN_CHG_CURRENT", "SEN_CHG_VOLTAGE", "SEN_MOTOR_LEFT", "SEN_MOTOR_RIGHT", "SEN_MOTOR_MOW", "SEN_MOTOR_MOW2","SEN_MOTOR_MOW3",
+	"SEN_BUMPER_LEFT", "SEN_BUMPER_RIGHT", "SEN_DROP_LEFT", "SEN_DROP_RIGHT", "SEN_SONAR_CENTER", "SEN_SONAR_LEFT", "SEN_SONAR_RIGHT", "SEN_BUTTON", 
+	"SEN_IMU", "SEN_MOTOR_MOW_RPM", "SEN_RTC", "SEN_RAIN", "SEN_TILT"};
 
 const char* mowPatternNames[] = {"RAND", "LANE", "BIDIR"};
 
@@ -1580,13 +1580,13 @@ void Robot::loop()  {
       break;  
     case STATE_PERI_OUT_FORW:  
       checkPerimeterBoundary();                 
-      //if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
-      if (perimeterInside || (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
+      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
+      //if (perimeterInside || (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_REV: 
       checkPerimeterBoundary();      
-     // if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
-      if (perimeterInside || (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
+      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
+      // if (perimeterInside || (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_ROLL: 
       if (millis() >= stateEndTime) setNextState(STATE_FORWARD,0);                
