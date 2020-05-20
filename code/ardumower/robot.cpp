@@ -872,7 +872,7 @@ void Robot::checkPerimeterBoundary(){
       }     
     }
   } else {  
-    if (stateCurr == STATE_FORWARD) {
+    if ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_BUMPER_FORWARD)) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){        
           perimeterTriggerTime = 0;
@@ -885,7 +885,8 @@ void Robot::checkPerimeterBoundary(){
         }
       }
     } 
-    else if ((stateCurr == STATE_ROLL)) {
+    //Think problem is here, what happens if mower reverse over perimeter line?
+    else if ((stateCurr == STATE_ROLL) || (stateCurr == STATE_BUMPER_REVERSE)) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){ 
           perimeterTriggerTime = 0;
