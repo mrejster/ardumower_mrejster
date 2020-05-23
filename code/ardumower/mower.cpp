@@ -33,13 +33,13 @@ Mower::Mower(){
   // ------- wheel motors -----------------------------
   motorAccel                 = 1000;      // motor wheel acceleration - only functional when odometry is not in use (warning: do not set too low)
   #if defined (ROBOT_ARDUMOWER)
-		motorPowerMax              = 25;        // motor wheel max power (Watt)		  
+		motorPowerMax              = 35;        // motor wheel max power (Watt)		  
 		motorSpeedMaxPwm           = 255;       // motor wheel max Pwm  (8-bit PWM=255, 10-bit PWM=1023)
-		motorSpeedMaxRpm           = 20;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
+		motorSpeedMaxRpm           = 25;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
 		motorLeftPID.Kp            = 1.5;       // motor wheel PID controller
     motorLeftPID.Ki            = 0.29;
     motorLeftPID.Kd            = 0.25;
-    motorZeroSettleTime        = 3000 ;     // how long (ms) to wait for motors to settle at zero speed
+    motorZeroSettleTime        = 1500;      // how long (ms) to wait for motors to settle at zero speed
 		motorReverseTime           = 1200;      // max. reverse time (ms)
 		motorRollTimeMax           = 1500;      // max. roll time (ms)
 		motorRollTimeMin           = 750;       // min. roll time (ms) should be smaller than motorRollTimeMax  
@@ -62,12 +62,12 @@ Mower::Mower(){
   motorBiDirSpeedRatio1      = 0.3;       // bidir mow pattern speed ratio 1
   motorBiDirSpeedRatio2      = 0.92;      // bidir mow pattern speed ratio 2
     
-  motorRightSwapDir          = 0;          // inverse right motor direction? 
-  motorLeftSwapDir           = 0;          // inverse left motor direction?
+  motorRightSwapDir          = 1;          // inverse right motor direction? 
+  motorLeftSwapDir           = 1;          // inverse left motor direction?
   
   // ------ mower motor -------------------------------
   motorMowAccel              = 2000;       // motor mower acceleration (warning: do not set too low) 2000 seems to fit best considerating start time and power consumption 
-  motorMowSpeedMaxPwm        = 255;        // motor mower max PWM
+  motorMowSpeedMaxPwm        = 210;        // motor mower max PWM
   motorMowPowerMax           = 75.0;       // motor mower max power (Watt)
   motorMowModulate           = 0;          // motor mower cutter modulation?
   motorMowRPMSet             = 3300;       // motor mower RPM (only for cutter modulation)
@@ -93,16 +93,16 @@ Mower::Mower(){
   // ------ sonar ------------------------------------
   sonarUse                   = 1;          // use ultra sonic sensor? (WARNING: robot will slow down, if enabled but not connected!)
   sonarLeftUse               = 1;
-  sonarRightUse              = 1;
+  sonarRightUse              = 0;
   sonarCenterUse             = 1;
   sonarTriggerBelow          = 0;       // ultrasonic sensor trigger distance (0=off)
-	sonarSlowBelow             = 100;     // ultrasonic sensor slow down distance
+	sonarSlowBelow             = 80;     // ultrasonic sensor slow down distance
   
   // ------ perimeter ---------------------------------
   perimeterUse               = 1;          // use perimeter?    
   perimeterTriggerTimeout    = 0;          // perimeter trigger timeout when escaping from inside (ms)  
   perimeterOutRollTimeMax    = 2000;       // roll time max after perimeter out (ms)
-  perimeterOutRollTimeMin    = 750;        // roll time min after perimeter out (ms)
+  perimeterOutRollTimeMin    = 1300;        // roll time min after perimeter out (ms)
   perimeterOutRevTime        = 3000;       // reverse time after perimeter out (ms)
   perimeterTrackRollTime     = 1500;       // roll time during perimeter tracking
   perimeterTrackRevTime      = 2200;       // reverse time during perimeter tracking
