@@ -547,13 +547,13 @@ void Robot::readSensors(){
     nextTimeBumper = millis() + 100;               
     tilt = (readSensor(SEN_TILT) == 0);
         
-    if (readSensor(SEN_BUMPER_LEFT) == 0) {
+    if (!readSensor(SEN_BUMPER_LEFT) == 0) {
       bumperLeftCounter++;
 			setSensorTriggered(SEN_BUMPER_LEFT);
       bumperLeft=true;
     }
 
-    if (readSensor(SEN_BUMPER_RIGHT) == 0) {
+    if (!readSensor(SEN_BUMPER_RIGHT) == 0) {
       bumperRightCounter++;
 			setSensorTriggered(SEN_BUMPER_RIGHT);
       bumperRight=true;
@@ -896,7 +896,7 @@ void Robot::checkPerimeterBoundary(){
       }     
     }
   } else {  
-    if (stateCurr == STATE_FORWARD) {
+    if ((stateCurr == STATE_FORWARD) || stateCurr == STATE_BUMPER_FORWARD) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){        
           perimeterTriggerTime = 0;
@@ -909,7 +909,7 @@ void Robot::checkPerimeterBoundary(){
         }
       }
     } 
-    else if ((stateCurr == STATE_ROLL)) {
+    else if (stateCurr == STATE_ROLL) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){ 
           perimeterTriggerTime = 0;
@@ -920,6 +920,20 @@ void Robot::checkPerimeterBoundary(){
           } else {
           setNextState(STATE_PERI_OUT_FORW, RIGHT);
           }  
+        }
+      }
+    }
+    else if ((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) {
+      if (perimeterTriggerTime != 0) {
+        if (millis() >= perimeterTriggerTime){        
+          perimeterTriggerTime = 0;
+          setMotorPWM( 0, 0, false );
+          //if ((rand() % 2) == 0){  
+          if(rotateLeft){  
+          setNextState(STATE_PERI_OUT_FORW, LEFT);
+          } else {
+          setNextState(STATE_PERI_OUT_FORW, RIGHT);
+          }
         }
       }
     }
@@ -1629,14 +1643,14 @@ void Robot::loop()  {
     case STATE_PERI_OUT_FORW:  
       checkPerimeterBoundary();                 
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
-      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
-      //if (perimeterInside || (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
+      //if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
+      if (perimeterInside && (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_REV: 
       checkPerimeterBoundary();      
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
-      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
-      //if (perimeterInside || (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
+      //if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
+      if (perimeterInside && (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_ROLL: 
       if (millis() >= stateEndTime) setNextState(STATE_FORWARD,0);                

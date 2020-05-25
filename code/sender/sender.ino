@@ -45,15 +45,15 @@
                                          
 #define pinIN1       9  // M1_IN1         (if using old L298N driver, connect this pin to L298N-IN1)
 #define pinIN2       2  // M1_IN2         (if using old L298N driver, connect this pin to L298N-IN2)
-#define pinPWM       3  // M1_PWM / nD2   (if using old L298N driver, leave open)
-#define pinEnable    5  // EN             (connect to motor driver enable)             
+#define pinPWM       5  // M1_PWM / nD2   (if using old L298N driver, leave open)
+#define pinEnable    3  // EN             (connect to motor driver enable)             
 
 // motor driver fault pin
 #define pinFault     4  // M1_nSF
-#define USE_PERI_FAULT        1     // use pinFault for driver fault detection? (set to '0' if not connected!)
+#define USE_PERI_FAULT        0     // use pinFault for driver fault detection? (set to '0' if not connected!)
 
 // motor driver feedback pin (=perimeter open/close detection, used for status LED)
-#define USE_PERI_CURRENT      1     // use pinFeedback for perimeter current measurements? (set to '0' if not connected!)
+#define USE_PERI_CURRENT      0     // use pinFeedback for perimeter current measurements? (set to '0' if not connected!)
 #define pinFeedback A0  // M1_FB
 #define PERI_CURRENT_MIN    0.03     // minimum Ampere for perimeter-is-closed detection 
 
@@ -76,7 +76,7 @@
 
 
 // code version 
-#define VER "596"
+#define VER "597"
 
 // --------------------------------------
 

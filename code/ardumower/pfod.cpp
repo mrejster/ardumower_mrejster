@@ -720,7 +720,7 @@ void RemoteControl::sendBatteryMenu(boolean update){
   if (robot->developerActive)
   {
     sendSlider("j09", F("Calibrate batChgFactor"), robot->batChgFactor, "", 0.001, 0.30, 0.55);
-    sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.06);   
+    sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.1);   
   }
 
   
@@ -789,7 +789,7 @@ void RemoteControl::sendOdometryMenu(boolean update){
   sendPIDSlider("l07", "RPM", robot->motorLeftPID, 0.01, 3.0);        
   sendSlider("l04", F("Ticks per one full revolution"), robot->odometryTicksPerRevolution, "", 1, 2120);       
   sendSlider("l01", F("Ticks per cm"), robot->odometryTicksPerCm, "", 0.1, 35);       
-  sendSlider("l02", F("Wheel base cm"), robot->odometryWheelBaseCm, "", 0.1, 50);    
+  sendSlider("l02", F("Wheel base cm"), robot->odometryWheelBaseCm, "", 0.1, 80);    
 	serialPort->println(F("|l05~Testing is"));
   switch (testmode){
     case 0: serialPort->print(F("OFF")); break;

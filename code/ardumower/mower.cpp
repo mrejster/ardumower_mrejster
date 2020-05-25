@@ -48,7 +48,7 @@ Mower::Mower(){
 		motorLeftPID.Kp            = 1.5;       // motor wheel PID controller
     motorLeftPID.Ki            = 0.29;
     motorLeftPID.Kd            = 0.25;
-    motorZeroSettleTime        = 3000 ;     // how long (ms) to wait for motors to settle at zero speed
+    motorZeroSettleTime        = 1500 ;     // how long (ms) to wait for motors to settle at zero speed
 		motorReverseTime           = 1200;      // max. reverse time (ms)
 		motorRollTimeMax           = 1500;      // max. roll time (ms)
 		motorRollTimeMin           = 750;       // min. roll time (ms) should be smaller than motorRollTimeMax  
@@ -71,12 +71,12 @@ Mower::Mower(){
   motorBiDirSpeedRatio1      = 0.3;       // bidir mow pattern speed ratio 1
   motorBiDirSpeedRatio2      = 0.92;      // bidir mow pattern speed ratio 2
     
-  motorRightSwapDir          = 0;          // inverse right motor direction? 
-  motorLeftSwapDir           = 0;          // inverse left motor direction?
+  motorRightSwapDir          = 1;          // inverse right motor direction? 
+  motorLeftSwapDir           = 1;          // inverse left motor direction?
   
   // ------ mower motor -------------------------------
   motorMowAccel              = 2000;       // motor mower acceleration (warning: do not set too low) 2000 seems to fit best considerating start time and power consumption 
-  motorMowSpeedMaxPwm        = 255;        // motor mower max PWM
+  motorMowSpeedMaxPwm        = 210;        // motor mower max PWM
   motorMowPowerMax           = 75.0;       // motor mower max power (Watt)
   motorMowModulate           = 0;          // motor mower cutter modulation?
   motorMowRPMSet             = 3300;       // motor mower RPM (only for cutter modulation)
@@ -89,7 +89,7 @@ Mower::Mower(){
   freeWheelUse               = 0;          // has free wheel sensor?  
   
   //  ------ bumper (BumperDuino)-------------------------------
-  bumperUse                  = 0;          // has bumpers?
+  bumperUse                  = 1;          // has bumpers?
   tiltUse                    = 0;          // use tilt-sensor?
   
   //  ------ drop -----------------------------------
@@ -100,19 +100,19 @@ Mower::Mower(){
   rainUse                    = 0;          // use rain sensor?
   
   // ------ sonar ------------------------------------
-  sonarUse                   = 0;          // use ultra sonic sensor? (WARNING: robot will slow down, if enabled but not connected!)
+  sonarUse                   = 1;          // use ultra sonic sensor? (WARNING: robot will slow down, if enabled but not connected!)
   sonarLeftUse               = 1;
-  sonarRightUse              = 1;
-  sonarCenterUse             = 0;
+  sonarRightUse              = 0;
+  sonarCenterUse             = 1;
   sonarTriggerBelow          = 0;       // ultrasonic sensor trigger distance (0=off)
-	sonarSlowBelow             = 100;     // ultrasonic sensor slow down distance
+	sonarSlowBelow             = 90;     // ultrasonic sensor slow down distance
   
   // ------ perimeter ---------------------------------
-  perimeterUse               = 0;          // use perimeter?    
+  perimeterUse               = 1;          // use perimeter?    
   perimeterTriggerTimeout    = 0;          // perimeter trigger timeout when escaping from inside (ms)  
   perimeterOutRollTimeMax    = 2000;       // roll time max after perimeter out (ms)
-  perimeterOutRollTimeMin    = 750;        // roll time min after perimeter out (ms)
-  perimeterOutRevTime        = 2200;       // reverse time after perimeter out (ms)
+  perimeterOutRollTimeMin    = 1300;        // roll time min after perimeter out (ms)
+  perimeterOutRevTime        = 3000;       // reverse time after perimeter out (ms)
   perimeterTrackRollTime     = 1500;       // roll time during perimeter tracking
   perimeterTrackRevTime      = 2200;       // reverse time during perimeter tracking
   #if defined (ROBOT_ARDUMOWER)
@@ -143,7 +143,7 @@ Mower::Mower(){
   imuRollPID.Kd              = 0;  
   
   // ------ model R/C ------------------------------------
-  remoteUse                  = 1;          // use model remote control (R/C)?
+  remoteUse                  = 0;          // use model remote control (R/C)?
   
   // ------ battery -------------------------------------
   #if defined (ROBOT_ARDUMOWER)
@@ -177,7 +177,7 @@ Mower::Mower(){
     DiodeD9                    = 0.36;       // Spannungsabfall an der Diode D9 auf den 1.3 Board (Die Spannungsanzeige ist zu niedrig verursacht durch die Diode D9) **UZ**							  
   #endif
   
-	 batChargingCurrentMax       = 1.6;       // maximum current your charger can devliver  
+	 batChargingCurrentMax       = 6.0;       // maximum current your charger can devliver  
   
   // ------  charging station ---------------------------
   stationRevTime             = 1800;       // charge station reverse time (ms)
@@ -190,8 +190,8 @@ Mower::Mower(){
   
 	#if defined (ROBOT_ARDUMOWER)
 	  odometryTicksPerRevolution = 1060;       // encoder ticks per one full resolution (without any divider)
-		wheelDiameter              = 250;        // wheel diameter (mm)
-		odometryWheelBaseCm        = 36;         // wheel-to-wheel distance (cm)
+		wheelDiameter              = 320;        // wheel diameter (mm)
+		odometryWheelBaseCm        = 70;         // wheel-to-wheel distance (cm)
 		odoLeftRightCorrection     = true;       // left-right correction for straight lines?
   #else  // ROBOT_MINI		
 		odometryTicksPerRevolution = 20;      // encoder ticks per one full resolution
