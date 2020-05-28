@@ -779,17 +779,17 @@ void Robot::checkCurrent(){
      //else reverseOrBidir(RIGHT); 
   }       
 
-    
+     //This section needs to be updated so mower reacts to overpower in ALL possible states!
   if (motorLeftSense >=motorPowerMax){  
     // left wheel motor overpowered    
-    if (     ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_PERI_FIND)  || (stateCurr == STATE_PERI_TRACK)) 
+    if (((stateCurr == STATE_FORWARD) || (stateCurr == STATE_BUMPER_FORWARD) || (stateCurr == STATE_PERI_FIND)  || (stateCurr == STATE_PERI_TRACK)) 
           && (millis() > stateStartTime + motorPowerIgnoreTime)){    				  
       //beep(1);
       motorLeftSenseCounter++;
 			setSensorTriggered(SEN_MOTOR_LEFT);
       setMotorPWM( 0, 0, false );  
       reverseOrBidir(RIGHT);
-    } else if    ((stateCurr == STATE_REVERSE) && (millis() > stateStartTime + motorPowerIgnoreTime)){
+    } else if    (((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) && (millis() > stateStartTime + motorPowerIgnoreTime)){
       motorLeftSenseCounter++;
 			setSensorTriggered(SEN_MOTOR_LEFT);
       setMotorPWM( 0, 0, false );  
@@ -802,15 +802,16 @@ void Robot::checkCurrent(){
       setNextState(STATE_FORWARD, 0);
     }    
   }
+  //This section needs to be updated so mower reacts to overpower in ALL possible states!
   else if (motorRightSense >= motorPowerMax){       
      // right wheel motor overpowered
-     if ( ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_PERI_FIND)) && (millis() > stateStartTime + motorPowerIgnoreTime)){    				  
+     if ( ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_BUMPER_FORWARD) || (stateCurr == STATE_PERI_FIND)) && (millis() > stateStartTime + motorPowerIgnoreTime)){    				  
        //beep(1);
        motorRightSenseCounter++;
 			 setSensorTriggered(SEN_MOTOR_RIGHT);
        setMotorPWM( 0, 0, false );  
        reverseOrBidir(RIGHT);
-     } else if ((stateCurr == STATE_REVERSE) && (millis() > stateStartTime + motorPowerIgnoreTime)){
+     } else if (((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) && (millis() > stateStartTime + motorPowerIgnoreTime)){
        motorRightSenseCounter++;
 				setSensorTriggered(SEN_MOTOR_RIGHT);
        setMotorPWM( 0, 0, false );  
@@ -820,7 +821,7 @@ void Robot::checkCurrent(){
 			 setSensorTriggered(SEN_MOTOR_RIGHT);
        setMotorPWM( 0, 0, false );  
        setNextState(STATE_FORWARD, 0);
-    }
+     } 
   }
 }  
 

@@ -48,7 +48,7 @@ Mower::Mower(){
 		motorLeftPID.Kp            = 1.5;       // motor wheel PID controller
     motorLeftPID.Ki            = 0.29;
     motorLeftPID.Kd            = 0.25;
-    motorZeroSettleTime        = 1500 ;     // how long (ms) to wait for motors to settle at zero speed
+    motorZeroSettleTime        = 500 ;     // how long (ms) to wait for motors to settle at zero speed
 		motorReverseTime           = 1200;      // max. reverse time (ms)
 		motorRollTimeMax           = 1500;      // max. roll time (ms)
 		motorRollTimeMin           = 750;       // min. roll time (ms) should be smaller than motorRollTimeMax  
@@ -133,7 +133,7 @@ Mower::Mower(){
   lawnSensorUse     = 0;                   // use capacitive lawn Sensor
   
   // ------  IMU (compass/accel/gyro) ----------------------
-  imuUse                     = 1;          // use IMU?
+  imuUse                     = 0;          // use IMU?
   imuCorrectDir              = 0;          // correct direction by compass?
   imuDirPID.Kp               = 5.0;        // direction PID controller
   imuDirPID.Ki               = 1.0;
