@@ -898,8 +898,7 @@ void Robot::checkPerimeterBoundary(){
     }
   } else {  
     if ((stateCurr == STATE_FORWARD) || 
-        (stateCurr == STATE_BUMPER_FORWARD) || 
-        (stateCurr == STATE_PERI_OUT_FORW)) {
+        (stateCurr == STATE_BUMPER_FORWARD)) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){        
           perimeterTriggerTime = 0;
@@ -927,8 +926,7 @@ void Robot::checkPerimeterBoundary(){
       }
     }
     else if ((stateCurr == STATE_REVERSE) 
-          || (stateCurr == STATE_BUMPER_REVERSE)
-          || (stateCurr == STATE_PERI_OUT_REV)) {
+          || (stateCurr == STATE_BUMPER_REVERSE)) {
       if (perimeterTriggerTime != 0) {
         if (millis() >= perimeterTriggerTime){        
           perimeterTriggerTime = 0;
@@ -942,11 +940,11 @@ void Robot::checkPerimeterBoundary(){
         }
       }
     }
-    else{
-      //Must have a safety state where things shut down for unknown cases!
-      Console.println("Error: unhandled state while crossing perimeter");
-      setNextState(STATE_ERROR,0);  
-    }
+    //else{
+    //  //Must have a safety state where things shut down for unknown cases!
+    //  Console.println("Error: unhandled state while crossing perimeter");
+    //  setNextState(STATE_ERROR,0);  
+    //}
   }
 }
 
@@ -1718,11 +1716,3 @@ void Robot::loop()  {
                              
   loopsPerSecCounter++;  
 }
-
-
-
-
-
-
-
-
