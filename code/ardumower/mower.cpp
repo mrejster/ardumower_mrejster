@@ -207,7 +207,7 @@ Mower::Mower(){
   odometryTicksPerCm         = ((float)odometryTicksPerRevolution) / (((float)wheelDiameter)/10.0) / (3.1415);    // computes encoder ticks per cm (do not change)
   
   // ----- GPS -------------------------------------------
-  gpsUse                     = 0;          // use GPS?
+  gpsUse                     = 1;          // use GPS?
   stuckIfGpsSpeedBelow       = 0.2;        // if Gps speed is below given value the mower is stuck
   gpsSpeedIgnoreTime         = 5000;       // how long gpsSpeed is ignored when robot switches into a new STATE (in ms)
 

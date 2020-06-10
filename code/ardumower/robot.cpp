@@ -1649,16 +1649,18 @@ void Robot::loop()  {
       } 
       break;  
     case STATE_PERI_OUT_FORW:  
-      checkPerimeterBoundary();                 
+      checkPerimeterBoundary();
+      checkBumpers();                 
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
-      //if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
-      if (perimeterInside && (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
+      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
+      //if (perimeterInside || (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_REV: 
-      checkPerimeterBoundary();      
+      checkPerimeterBoundary();
+      checkBumpers();      
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
-      //if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
-      if (perimeterInside && (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
+      if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
+      //if (perimeterInside || (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_ROLL: 
       if (millis() >= stateEndTime) setNextState(STATE_FORWARD,0);                
