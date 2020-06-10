@@ -75,7 +75,11 @@ void Robot::printInfo(Stream &s){
       //Streamprint(s, "per %3d ", perimeterLeft);          
       if (perimeterUse) Streamprint(s, "per %3d ", perimeterCounter);                  
       if (lawnSensorUse) Streamprint(s, "lawn %3d ", lawnSensorCounter);
-      if (gpsUse) Streamprint(s, "gps %2d ", (int)gps.satellites());            
+      if (gpsUse){ 
+      Streamprint(s, "gps %2d ", (int)gps.satellites());            
+      Streamprint(s, "lat %15f ", robot->lat);            
+      Streamprint(s, "lon %15f ", robot->lon);            
+      }
     }
     Streamprint(s, "bat %2d.%01d ", (int)batVoltage, (int)((batVoltage *10) - ((int)batVoltage*10)) );       
     Streamprint(s, "chg %2d.%01d %2d.%01d ", 
