@@ -77,8 +77,11 @@ void Robot::printInfo(Stream &s){
       if (lawnSensorUse) Streamprint(s, "lawn %3d ", lawnSensorCounter);
       if (gpsUse){ 
       Streamprint(s, "gps %2d ", (int)gps.satellites());            
-      Streamprint(s, "lat %15f ", robot->lat);            
-      Streamprint(s, "lon %15f ", robot->lon);            
+      float lat, lon;
+      unsigned long age;
+      gps.f_get_position(&lat, &lon, &age);
+      Streamprint(s, "lat %f ", lat);            
+      Streamprint(s, "lon %f ", lon);            
       }
     }
     Streamprint(s, "bat %2d.%01d ", (int)batVoltage, (int)((batVoltage *10) - ((int)batVoltage*10)) );       
@@ -526,4 +529,3 @@ void Robot::readSerial() {
 	 }
   }    
 }
-
