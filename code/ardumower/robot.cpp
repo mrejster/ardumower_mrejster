@@ -719,9 +719,9 @@ void Robot::reverseOrBidirBumper(byte aRollDir) {
       setNextState(STATE_FORWARD, LEFT);
     }
   } else {
-    if (stateCurr == STATE_FORWARD) {
+    if ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_BUMPER_FORWARD)) {
       setNextState(STATE_BUMPER_REVERSE, aRollDir);
-    } else if (stateCurr == STATE_REVERSE) {
+    } else if ((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) {
       setNextState(STATE_BUMPER_FORWARD, aRollDir);
     }
   }
