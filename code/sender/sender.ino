@@ -68,7 +68,7 @@
 #define pinChargeCurrent     A2     // ACS712-05 current sensor OUT
 #define CHG_CURRENT_MIN   0.3
 // minimum Ampere for charging detection
-#define ROBOT_OUT_OF_STATION_TIMEOUT_MINS 360  // timeout for perimeter switch-off if robot not in station (minutes)
+#define ROBOT_OUT_OF_STATION_TIMEOUT_MINS 720  // timeout for perimeter switch-off if robot not in station (minutes)
 
 // ---- sender status LED ----
 #define  pinLED 13  // ON: perimeter closed, OFF: perimeter open, BLINK: robot is charging
@@ -202,12 +202,12 @@ void setup() {
   pinMode(pinChargeCurrent, INPUT);
   
   // configure ADC reference
-  // analogReference(DEFAULT); // ADC 5.0v ref    
-  analogReference(INTERNAL); // ADC 1.1v ref       
+  analogReference(DEFAULT); // ADC 5.0v ref    
+  // analogReference(INTERNAL); // ADC 1.1v ref       
     
   // sample rate 9615 Hz (19230,76923076923 / 2 => 9615.38)
   int T = 1000.0*1000.0/ 9615.38;
-  Serial.begin(19200);
+  Serial.begin(57600);
   
   Serial.println("START");
   Serial.print("Ardumower Sender ");
@@ -322,7 +322,7 @@ void loop(){
     // determine charging current (Ampere)        
     if (USE_CHG_CURRENT) {                
       chargeCurrentMeasurements.getAverage(v);        
-      chargeCurrent = ((double)(((int)v)  - ((int)chargeADCZero))) / 1023.0 * 1.1;  
+      chargeCurrent = ((double)(((int)v)  - ((int)chargeADCZero))) / 1023.0 * 40; //1.1;  
       isCharging = (abs(chargeCurrent) >= CHG_CURRENT_MIN); 
       if (isCharging) robotOutOfStationTimeMins = 0; // reset timeout
     }  
@@ -389,9 +389,3 @@ void loop(){
   digitalWrite(pinLED, stateLED);   
 
 }
-
-
-
-
-
-

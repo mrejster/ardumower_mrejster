@@ -720,7 +720,7 @@ void RemoteControl::sendBatteryMenu(boolean update){
   if (robot->developerActive)
   {
     sendSlider("j09", F("Calibrate batChgFactor"), robot->batChgFactor, "", 0.001, 0.30, 0.55);
-    sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.1);   
+    sendSlider("j08", F("Charge factor"), robot->chgFactor, "", 0.001, 0.01, 0.2);   
   }
 
   

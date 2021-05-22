@@ -370,7 +370,10 @@ class Robot
     int perimeterTrackRevTime ; // perimeter tracking reverse time (ms)
     PID perimeterPID ;             // perimeter PID controller
     int perimeterMag ;             // perimeter magnitude
+    int perimeterMagRight ;             // perimeter magnitude
     RunningMedian perimeterMagMedian = RunningMedian(300);
+    RunningMedian perimeterMagRightMedian = RunningMedian(300);
+    RunningMedian chgCurrMedian = RunningMedian(10);
     float PeriCoeffAccel;
     int leftSpeedperi;
     int rightSpeedperi;
@@ -378,10 +381,13 @@ class Robot
     int MaxSpeedperiPwm;
     int perimeterMagMaxValue;
     boolean perimeterInside ;      // is inside perimeter?
+    boolean perimeterInsideRight ;      // is inside perimeter?
+    
     unsigned long perimeterTriggerTime; // time to trigger perimeter transition (timeout)
     int perimeterTriggerTimeout;   // perimeter trigger timeout (ms)
     unsigned long perimeterLastTransitionTime;
     int perimeterCounter ;         // counts perimeter transitions
+    int perimeterCounterRight ;         // counts perimeter transitions
     unsigned long nextTimePerimeter ;
     int trackingPerimeterTransitionTimeOut;
     int trackingErrorTimeOut;    

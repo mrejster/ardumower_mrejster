@@ -81,7 +81,12 @@ void Robot::printInfo(Stream &s){
       unsigned long age;
       gps.f_get_position(&lat, &lon, &age);
       Streamprint(s, "lat %f ", lat);            
-      Streamprint(s, "lon %f ", lon);            
+      Streamprint(s, "lon %f ", lon);
+      Streamprint(s, "age %f ", age);
+      Streamprint(s, "course %f ", gps.f_course());
+      Streamprint(s, "speed %f ", gps.f_speed_kmph());
+
+      Streamprint(s, "ODO %f %f %f", odometryX, odometryY, odometryTheta);          
       }
     }
     Streamprint(s, "bat %2d.%01d ", (int)batVoltage, (int)((batVoltage *10) - ((int)batVoltage*10)) );       
@@ -89,8 +94,8 @@ void Robot::printInfo(Stream &s){
         (int)chgVoltage, (int)((chgVoltage *10) - ((int)chgVoltage*10)),
         (int)chgCurrent, (int)((abs(chgCurrent) *10) - ((int)abs(chgCurrent)*10))    
       );    
-    Streamprint(s, "imu%3d ", imu.getCallCounter());  
-    Streamprint(s, "adc%3d ", ADCMan.getCapturedChannels());  
+    Streamprint(s, "imu %d ", imu.getCallCounter());  
+    Streamprint(s, "adc %d ", ADCMan.getCapturedChannels());  
     Streamprint(s, "%s\r\n", name.c_str());                  
   }
  }
@@ -107,9 +112,9 @@ void Robot::printMenu(){
   Console.println(F("x=print USER settings"));    
   Console.println(F("p=test EEPROM module"));   
   Console.println(F("c=test RTC module"));  	
-  Console.println(F("i=scan for I2C devices"));         
+  Console.println(F("i=scan for I2C devices"));
   Console.println(F("1=test motors"));
-  Console.println(F("2=test odometry"));  
+  Console.println(F("2=test odometry"));           
   Console.println(F("3=communications menu (setup Bluetooth & WIFI)"));
   Console.println(F("4=ADC calibration (perimeter sender & charger must be off)"));      
   Console.println(F("5=calibrate IMU acceleration next side"));  

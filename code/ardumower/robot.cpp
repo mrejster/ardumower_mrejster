@@ -140,9 +140,13 @@ Robot::Robot(){
   imuRollDir = LEFT;  
   
   perimeterMag = 1;
+  perimeterMagRight = 1;
   perimeterMagMedian.add(perimeterMag);
+  perimeterMagRightMedian.add(perimeterMagRight);
   perimeterInside = true;
-  perimeterCounter = 0;  
+  perimeterInsideRight = true;
+  perimeterCounter = 0; 
+  perimeterCounterRight = 0;  
   perimeterLastTransitionTime = 0;
   perimeterTriggerTime = 0;
   
@@ -237,7 +241,10 @@ void Robot::setSensorTriggered(char type){
   if (!rmcsUse){
   Console.println( sensorNames[lastSensorTriggered] );
   }else{
-    rmcsSendSensorTriggered(type);
+    //Don't spam communication when in error
+    if (stateCurr != STATE_ERROR){
+      rmcsSendSensorTriggered(type);
+    } 
   }
 }
 
@@ -447,13 +454,27 @@ void Robot::readSensors(){
     if (stateCurr == STATE_PERI_TRACK) nextTimePerimeter = millis() +  30;   
     else nextTimePerimeter = millis() +  50;   // 50
     perimeterMag = readSensor(SEN_PERIM_LEFT);
-    if (stateCurr == STATE_PERI_FIND)perimeterMagMedian.add(abs(perimeterMag));
+    perimeterMagRight = readSensor(SEN_PERIM_RIGHT);
+    if (stateCurr == STATE_PERI_FIND){
+      perimeterMagMedian.add(abs(perimeterMag));
+      perimeterMagRightMedian.add(abs(perimeterMagRight));
+    
+    }
+    //Toggles when passing perimeter
     if ((perimeter.isInside(0) != perimeterInside)){      
       perimeterCounter++;
 			setSensorTriggered(SEN_PERIM_LEFT);
       perimeterLastTransitionTime = millis();
       perimeterInside = perimeter.isInside(0);
-    }    
+    } 
+    
+    if ((perimeter.isInside(1) != perimeterInsideRight)){      
+      perimeterCounterRight++;
+			setSensorTriggered(SEN_PERIM_RIGHT);
+      perimeterLastTransitionTime = millis();
+      perimeterInsideRight = perimeter.isInside(1);
+    }
+
     static boolean LEDstate = false;
     if (perimeterInside && !LEDstate) {
       setActuator(ACT_LED, HIGH);
@@ -476,7 +497,8 @@ void Robot::readSensors(){
       	&& (stateCurr != STATE_STATION_CHARGING) && (stateCurr != STATE_STATION_CHECK) 
       	&& (stateCurr != STATE_STATION_REV) && (stateCurr != STATE_STATION_ROLL) 
       	&& (stateCurr != STATE_STATION_FORW) && (stateCurr != STATE_REMOTE) && (stateCurr != STATE_PERI_OUT_FORW)
-        && (stateCurr != STATE_PERI_OUT_REV) && (stateCurr != STATE_PERI_OUT_ROLL) && (stateCurr != STATE_PERI_TRACK)) {
+        && (stateCurr != STATE_PERI_OUT_REV) && (stateCurr != STATE_PERI_OUT_ROLL) && (stateCurr != STATE_PERI_TRACK)
+        && (stateCurr != STATE_ERROR)) {
         Console.println("Error: perimeter too far away");
         addErrorCounter(ERR_PERIMETER_TIMEOUT);
         setNextState(STATE_ERROR,0);
@@ -612,7 +634,11 @@ void Robot::readSensors(){
     // convert to double  
     batADC = readSensor(SEN_BAT_VOLTAGE);
 		int currentADC = readSensor(SEN_CHG_CURRENT);
-		int chgADC = readSensor(SEN_CHG_VOLTAGE);    
+		
+    //Running mean to compensate for noisy sensor
+
+
+    int chgADC = readSensor(SEN_CHG_VOLTAGE);    
 		//Console.println(currentADC);
     double batvolt = ((double)batADC) * batFactor / 10;  // / 10 due to arduremote bug, can be removed after fixing    
     double chgvolt = ((double)chgADC) * batChgFactor / 10;  // / 10 due to arduremote bug, can be removed after fixing    
@@ -624,10 +650,11 @@ void Robot::readSensors(){
     
     // low-pass filter
     double accel = 0.01;
+    double accelChg = 0.01;
 		//double accel = 1.0;
     if (abs(batVoltage-batvolt)>5)   batVoltage = batvolt; else batVoltage = (1.0-accel) * batVoltage + accel * batvolt;
     if (abs(chgVoltage-chgvolt)>5)   chgVoltage = chgvolt; else chgVoltage = (1.0-accel) * chgVoltage + accel * chgvolt;
-		if (abs(chgCurrent-curramp)>0.5) chgCurrent = curramp; else chgCurrent = (1.0-accel) * chgCurrent + accel * curramp;       
+		if (abs(chgCurrent-curramp)>4) chgCurrent = curramp; else chgCurrent = (1.0-accelChg) * chgCurrent + accelChg * curramp;       
   } 
 
   if ((rainUse) && (millis() >= nextTimeRain)) {
@@ -719,9 +746,9 @@ void Robot::reverseOrBidirBumper(byte aRollDir) {
       setNextState(STATE_FORWARD, LEFT);
     }
   } else {
-    if ((stateCurr == STATE_FORWARD) || (stateCurr == STATE_BUMPER_FORWARD)) {
+    if ((stateCurr == STATE_FORWARD)) {
       setNextState(STATE_BUMPER_REVERSE, aRollDir);
-    } else if ((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) {
+    } else if ((stateCurr == STATE_REVERSE)) {
       setNextState(STATE_BUMPER_FORWARD, aRollDir);
     }
   }
@@ -789,6 +816,7 @@ void Robot::checkCurrent(){
 			setSensorTriggered(SEN_MOTOR_LEFT);
       setMotorPWM( 0, 0, false );  
       reverseOrBidir(RIGHT);
+      //setNextState(STATE_REVERSE, 0);
     } else if    (((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) && (millis() > stateStartTime + motorPowerIgnoreTime)){
       motorLeftSenseCounter++;
 			setSensorTriggered(SEN_MOTOR_LEFT);
@@ -811,6 +839,7 @@ void Robot::checkCurrent(){
 			 setSensorTriggered(SEN_MOTOR_RIGHT);
        setMotorPWM( 0, 0, false );  
        reverseOrBidir(RIGHT);
+       //setNextState(STATE_REVERSE, 0);
      } else if (((stateCurr == STATE_REVERSE) || (stateCurr == STATE_BUMPER_REVERSE)) && (millis() > stateStartTime + motorPowerIgnoreTime)){
        motorRightSenseCounter++;
 				setSensorTriggered(SEN_MOTOR_RIGHT);
@@ -830,7 +859,8 @@ void Robot::checkBumpers(){
   if (!bumperUse) return;
   if ((mowPatternCurr == MOW_BIDIR) && (millis() < stateStartTime + 4000)) return;
   
-  if ((bumperLeft || bumperRight)) {    
+  //Change: Only respond to bumper if inside perimeter when close to perimeter 2020-07-12.
+  if ((bumperLeft || bumperRight) && (perimeter.isInside(0) || perimeter.getMagnitude(0) > 700)) {    
       if (bumperLeft) {
         reverseOrBidirBumper(RIGHT);          
       } else {
@@ -900,8 +930,9 @@ void Robot::checkPerimeterBoundary(){
     if ((stateCurr == STATE_FORWARD) || 
         (stateCurr == STATE_BUMPER_FORWARD)) {
       if (perimeterTriggerTime != 0) {
-        if (millis() >= perimeterTriggerTime){        
+        if (millis() >= perimeterTriggerTime){       
           perimeterTriggerTime = 0;
+          setMotorPWM( 0, 0, false );
           //if ((rand() % 2) == 0){  
           if(rotateLeft){  
           setNextState(STATE_PERI_OUT_REV, LEFT);
@@ -1349,6 +1380,7 @@ void Robot::setNextState(byte stateNew, byte dir){
      printInfo(Console);          
   }
   else{
+    rmcsSendState(Console);
     rmcsPrintInfo(Console);
   }
 }// -------------------------- ENDE void Robot::setNextState(byte stateNew, byte dir)
@@ -1397,10 +1429,10 @@ void Robot::loop()  {
     printErrors();
 	}
  
-    if (stateCurr != STATE_ROS && rmcsUse == false) {
+    /*if (stateCurr != STATE_ROS && rmcsUse == false) {
       printInfo(Console);    
       printErrors();
-    }    
+    }*/    
     ledState = ~ledState;    
     /*if (ledState) setActuator(ACT_LED, HIGH);
       else setActuator(ACT_LED, LOW);        */
@@ -1650,14 +1682,16 @@ void Robot::loop()  {
       break;  
     case STATE_PERI_OUT_FORW:  
       checkPerimeterBoundary();
-      checkBumpers();                 
+      checkBumpers();
+      checkCurrent();                 
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
       if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);  
       //if (perimeterInside || (millis() >= stateEndTime)) setNextState(STATE_PERI_OUT_ROLL, rollDir); 
       break;
     case STATE_PERI_OUT_REV: 
       checkPerimeterBoundary();
-      checkBumpers();      
+      checkBumpers();
+      checkCurrent();      
       // https://forum.ardumower.de/threads/perimeteroutreversetime.23723/
       if (millis() >= stateEndTime) setNextState(STATE_PERI_OUT_ROLL, rollDir);   
       //if (perimeterInside || (millis() >= stateEndTime)) setNextState (STATE_PERI_OUT_ROLL, rollDir); 

@@ -72,7 +72,7 @@ void Robot::rmcsSendState(Stream &s){
     // ROBOT State, Timestamp, state, error code, battery, charging
     Streamprint(s, "$RMSTA,%6u,",((millis()-stateStartTime)/1000));
     Streamprint(s, "%4s,", stateNames[stateCurr]);
-    Streamprint(s, "%4s,", "E000");
+    Streamprint(s, "%u,", millis());
     Streamprint(s, "%2d.%01d,",(int)batVoltage, (int)((batVoltage *10) - ((int)batVoltage*10)));
     Streamprint(s, "%2d.%01d,",(int)chgVoltage, (int)((chgVoltage *10) - ((int)chgVoltage*10)));
     Streamprint(s, "%2d.%01d",(int)chgCurrent, (int)((abs(chgCurrent) *10) - ((int)abs(chgCurrent)*10))  ); 
@@ -123,7 +123,10 @@ void Robot::rmcsSendOdometry(Stream &s){
   // ROBOT odometry data, Timestamp, odometry left value, odometry right value
     Streamprint(s, "$RMODO,%6u,", (millis()-stateStartTime)/1000);
     Streamprint(s, "%4d ,",odometryLeft);                         
-    Streamprint(s, "%4d ",odometryRight);                   
+    Streamprint(s, "%4d ,",odometryRight);                   
+    Streamprint(s, "%4d ,",(int)odometryX);                   
+    Streamprint(s, "%4d ,",(int)odometryY);
+    Streamprint(s, "%4d",(int)(odometryTheta*180/PI));                   
     Streamprint(s, "\r\n"); 
 }
 
@@ -132,10 +135,17 @@ void Robot::rmcsSendGPS(Stream &s){
 // ROBOT GPS data, Timestamp, latitude, longitude
     long lat, lon;
     unsigned long age;
-    gps.get_position(&lat, &lon, &age);  
+    gps.get_position(&lat, &lon, &age);
     Streamprint(s, "$RMGPS,%6u,", (millis()-stateStartTime)/1000);
     Streamprint(s, "%10d ,",lat);                         
-    Streamprint(s, "%10d ",lon);                      
+    Streamprint(s, "%10d ,",lon);
+    Streamprint(s, "%10d ,",gps.course());
+    Streamprint(s, "%10d ,",gps.speed());
+    Streamprint(s, "%10d ,",gps.altitude());
+    //Streamprint(s, "%2d.%01d,",(int)gps.f_speed_mps(), (int)((gps.f_speed_mps() *10) - ((int)gps.f_speed_mps()*10)));
+    //Streamprint(s, "%3d.%01d,",(int)gps.f_course(), (int)((gps.f_course() *10) - ((int)gps.f_course()*10)));
+    Streamprint(s, "%.2f ,",gps.f_speed_mps()); //Testing to print a float.
+    
     Streamprint(s, "\r\n");
 }
 
@@ -145,7 +155,10 @@ void Robot::rmcsSendPerimeter(Stream &s){
     Streamprint(s, "$RMPER,%6u,", (millis()-stateStartTime)/1000);
     Streamprint(s, "%4d ,",perimeterMag);                         
     Streamprint(s, "%4d ,",perimeterInside);   
-    Streamprint(s, "%4d ",perimeterCounter);                    
+    Streamprint(s, "%4d ,",perimeterCounter);
+    Streamprint(s, "%4d ,",perimeterMagRight);                         
+    Streamprint(s, "%4d ,",perimeterInsideRight);                           
+    Streamprint(s, "%4d ",perimeterCounterRight);
     Streamprint(s, "\r\n"); 
 }
 

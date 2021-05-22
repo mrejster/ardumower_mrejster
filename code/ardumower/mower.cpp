@@ -42,16 +42,16 @@ Mower::Mower(){
   // ------- wheel motors -----------------------------
   motorAccel                 = 1000;      // motor wheel acceleration - only functional when odometry is not in use (warning: do not set too low)
   #if defined (ROBOT_ARDUMOWER)
-		motorPowerMax              = 75;        // motor wheel max power (Watt)		  
+		motorPowerMax              = 20;        // motor wheel max power (Watt)		  
 		motorSpeedMaxPwm           = 255;       // motor wheel max Pwm  (8-bit PWM=255, 10-bit PWM=1023)
-		motorSpeedMaxRpm           = 25;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
-		motorLeftPID.Kp            = 1.5;       // motor wheel PID controller
+		motorSpeedMaxRpm           = 20;        // motor wheel max RPM (WARNING: do not set too high, so there's still speed control when battery is low!)
+		motorLeftPID.Kp            = 1.2;       // motor wheel PID controller
     motorLeftPID.Ki            = 0.29;
-    motorLeftPID.Kd            = 0.25;
+    motorLeftPID.Kd            = 0.15;
     motorZeroSettleTime        = 500 ;     // how long (ms) to wait for motors to settle at zero speed
 		motorReverseTime           = 1200;      // max. reverse time (ms)
-		motorRollTimeMax           = 1500;      // max. roll time (ms)
-		motorRollTimeMin           = 750;       // min. roll time (ms) should be smaller than motorRollTimeMax  
+		motorRollTimeMax           = 2000;      // max. roll time (ms)
+		motorRollTimeMin           = 1000;       // min. roll time (ms) should be smaller than motorRollTimeMax  
   #else // ROBOT_MINI		
 		motorPowerMax              = 2.0;         // motor wheel max power (Watt)			
 		motorSpeedMaxPwm           = 127;       // motor wheel max Pwm  (8-bit PWM=255, 10-bit PWM=1023)	  
@@ -102,7 +102,7 @@ Mower::Mower(){
   // ------ sonar ------------------------------------
   sonarUse                   = 1;          // use ultra sonic sensor? (WARNING: robot will slow down, if enabled but not connected!)
   sonarLeftUse               = 1;
-  sonarRightUse              = 0;
+  sonarRightUse              = 1;
   sonarCenterUse             = 1;
   sonarTriggerBelow          = 0;       // ultrasonic sensor trigger distance (0=off)
 	sonarSlowBelow             = 90;     // ultrasonic sensor slow down distance
@@ -116,9 +116,9 @@ Mower::Mower(){
   perimeterTrackRollTime     = 1500;       // roll time during perimeter tracking
   perimeterTrackRevTime      = 2200;       // reverse time during perimeter tracking
   #if defined (ROBOT_ARDUMOWER)
-	  perimeterPID.Kp            = 16;       // perimeter PID controller
-    perimeterPID.Ki            = 8;
-    perimeterPID.Kd            = 0.8;  
+	  perimeterPID.Kp            = 10;       // perimeter PID controller
+    perimeterPID.Ki            = 4;
+    perimeterPID.Kd            = 0;  
 	#else // ROBOT_MINI
 		perimeterPID.Kp    = 24.0;  // perimeter PID controller
     perimeterPID.Ki    = 7.0;
@@ -128,7 +128,7 @@ Mower::Mower(){
   trackingPerimeterTransitionTimeOut              = 2500;   // never<500 ms
   trackingErrorTimeOut                            = 10000;  // 0=disable
   trackingBlockInnerWheelWhilePerimeterStruggling = 1;
-  MaxSpeedperiPwm = 200; // speed max in PWM while perimeter tracking
+  MaxSpeedperiPwm = 160; // speed max in PWM while perimeter tracking
   // ------ lawn sensor --------------------------------
   lawnSensorUse     = 0;                   // use capacitive lawn Sensor
   
@@ -220,7 +220,7 @@ Mower::Mower(){
   userSwitch3                = 0;          // user-defined switch 3 (default value)
 
   // ----- timer -----------------------------------------
-  timerUse                   = 0;          // use RTC and timer?
+  timerUse                   = 1;          // use RTC and timer?
 
   // ----- bluetooth -------------------------------------
   bluetoothUse               = 1;          // use Bluetooth module?  (WARNING: if enabled, you cannot use ESP8266)
@@ -236,7 +236,7 @@ Mower::Mower(){
   statsBatteryChargingCapacityTotal = 30000;
   
   // ------------robot mower communication standard---
-  rmcsUse					= false;   // if set robot mower communication standard (NMEA) is used.
+  rmcsUse					= true;   // if set robot mower communication standard (NMEA) is used.
   RMCS_interval_state	  	= 1000;  // default update interval in ms
   RMCS_interval_motor_current = 1000;
   RMCS_interval_sonar 		= 1000;
@@ -606,7 +606,7 @@ int Mower::readSensor(char type){
 #endif
 // perimeter----------------------------------------------------------------------------------------------
     case SEN_PERIM_LEFT: return perimeter.getMagnitude(0); break;
-    //case SEN_PERIM_RIGHT: return Perimeter.getMagnitude(1); break;
+    case SEN_PERIM_RIGHT: return perimeter.getMagnitude(1); break;
     
 // battery------------------------------------------------------------------------------------------------
     case SEN_BAT_VOLTAGE: ADCMan.read(pinVoltageMeasurement);  return ADCMan.read(pinBatteryVoltage); break;
@@ -688,5 +688,3 @@ void Mower::configureBluetooth(boolean quick){
   BluetoothConfig bt;
   bt.setParams(name, BLUETOOTH_PIN, BLUETOOTH_BAUDRATE, quick);
 }
-
-
